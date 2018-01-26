@@ -1,0 +1,40 @@
+---
+- name: Get first free IP and register hostname to it in phpIPAM
+  phpipam_ip:
+    base_url: "{{ phpipam_base_url }}"
+    app_id: "{{ phpipam_app_id }}"
+    username: "{{ phpipam_username }}"
+    password: "{{ phpipam_password }}"
+    subnet: "{{ phpipam_subnet }}"
+    hostname: "{{ phpipam_hostname }}"
+    state: "{{ phpipam_state }}"
+  when: phpipam_state == "present"
+  register: ip_info
+
+- name: Release IP
+  phpipam_ip:
+    base_url: "{{ phpipam_base_url }}"
+    app_id: "{{ phpipam_app_id }}"
+    username: "{{ phpipam_username }}"
+    password: "{{ phpipam_password }}"
+    ip_addr: "{{ ansible_default_ipv4.address }}"
+    state: "{{ phpipam_state }}"
+  when: phpipam_state == "absent"
+
+- name: Debug IP Information
+  debug:
+    var: ip_info
+    verbosity: 2
+
+- name: Set nameserver facts for all defined nameservers, the nameservers can be accessed through phpipam_nameserverX
+  set_fact:
+    "{{ 'phpipam_nameserver' + ((item.0 | int +1) | string) }}": "{{ item.1 }}"
+  with_indexed_items: "{{ ip_info.meta.nameservers }}"    
+  when: phpipam_state == "present"
+
+- name: Set ip, gw and netmask facts
+  set_fact:
+    phpipam_ip: "{{ ip_info.meta.ip_addr }}"
+    phpipam_gw: "{{ ip_info.meta.gateway }}"
+    phpipam_netmask: "{{ ip_info.meta.netmask }}"
+  when: phpipam_state == "present"

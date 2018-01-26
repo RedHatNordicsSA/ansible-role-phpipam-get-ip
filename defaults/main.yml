@@ -1,0 +1,8 @@
+---
+phpipam_base_url: http://phpipam.example.com/api
+phpipam_app_id: ansible
+phpipam_username: someuser
+phpipam_password: secret
+phpipam_subnet: "192.168.0.1/24"
+phpipam_hostname: host.examople.com
+phpipam_state: present
