@@ -1,7 +1,8 @@
 ansible-role-phpipam-get-ip
 ===========================
 
-Handles reserving and freeing of IP address for a server using phpIPAM.
+Handles reserving and freeing of IP address for a server using
+[phpIPAM](https://phpipam.net/) IP address manager.
 
 Requirements
 ------------
